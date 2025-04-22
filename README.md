@@ -24,3 +24,7 @@ To install the required dependencies, run:
 
 ```bash
 yarn install
+
+![MoodWeather App Screenshot 1](./assets/Screenshot_2025-04-22_213840.png)
+![MoodWeather App Screenshot 2](./assets/Screenshot_2025-04-22_213851.png)
+![MoodWeather App Screenshot 3](./assets/Screenshot_2025-04-22_213909.png)
