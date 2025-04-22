@@ -5,6 +5,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   css: {
-    postcss: "./postcss.config.cjs", // If needed, provide the path to your config here
+    postcss: "./postcss.config.cjs",
   },
+  base: "/MoodWeather/",
 });
