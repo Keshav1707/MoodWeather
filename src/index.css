@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Make calendar blurred instead of transparent */
+.custom-calendar {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 0.5rem;
+  color: black; /* Set text color to black */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Blurred month/year header */
+.custom-calendar__navigation {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: black; /* Set text color to black */
+}
+
+/* Blurred weekday headers (Su, Mo, etc.) */
+.custom-calendar__month-view__weekdays {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: black; /* Set text color to black */
+}
+
+/* Blurred individual day tiles */
+.custom-calendar__tile {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  color: black; /* Set text color to black */
+}
+
+/* Hover effect */
+.custom-calendar__tile:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 0.5rem;
+  color: black; /* Ensure hover text is black */
+}
+
+/* Selected day */
+.custom-calendar__tile--active {
+  background: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: black !important; /* Ensure selected day text is black */
+  border-radius: 0.5rem;
+}
