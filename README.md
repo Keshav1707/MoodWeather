@@ -1,16 +1,26 @@
-<<<<<<< HEAD
 # MoodWeather
-=======
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+MoodWeather is a simple React application that allows users to track their moods and log entries. The app includes a mood selector, a page to display entries, a graph to visualize mood trends, and responsive design for both mobile and desktop views. The background color dynamically changes based on the user's selected mood. All entries are saved locally in the browser's local storage, ensuring that data persists even after a page refresh.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Mood Selector**: Users can select their current mood from a set of predefined moods, and the background color of the app changes accordingly.
+- **Entries Page**: Displays a list of all mood entries made by the user.
+- **Mood Graph**: A graph that visualizes mood trends over time.
+- **Responsive Design**: The app is optimized for both mobile and desktop views.
+- **Persistent Data**: Entries are stored in the browser's local storage to persist even after a page refresh.
+- **Add Old Entries**: Users can add and view old mood entries from the past.
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
->>>>>>> 03ba554 (Initial commit)
+### Prerequisites
+
+- Node.js (version 16.x or higher)
+- Yarn (optional, you can also use npm)
+
+### Install Dependencies
+
+To install the required dependencies, run:
+
+```bash
+yarn install
