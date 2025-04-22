@@ -17,9 +17,9 @@ MoodWeather is a simple React application that allows users to track their moods
 
 - Node.js (version 16.x or higher)
 - Yarn (optional, you can also use npm)
-![MoodWeather App Screenshot 1](./assets/Screenshot_2025-04-22_213840.png)
-![MoodWeather App Screenshot 2](./assets/Screenshot_2025-04-22_213851.png)
-![MoodWeather App Screenshot 3](./assets/Screenshot_2025-04-22_213909.png)
+![MoodWeather App Screenshot 1](./assets/images/Screenshot 2025-04-22 213840.png)
+![MoodWeather App Screenshot 2](./assets/images/Screenshot 2025-04-22 213840.png)
+![MoodWeather App Screenshot 3](./assets/images/Screenshot_2025-04-22_213909.png)
 ### Install Dependencies
 
 To install the required dependencies, run:
