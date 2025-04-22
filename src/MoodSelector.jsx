@@ -4,11 +4,36 @@ import useWeather from "./useWeather";
 import "react-calendar/dist/Calendar.css";
 
 const moods = [
-  { id: 1, emoji: "😊", label: "Happy", bgColor: "bg-yellow-300" },
-  { id: 2, emoji: "😞", label: "Sad", bgColor: "bg-blue-300" },
-  { id: 3, emoji: "😠", label: "Angry", bgColor: "bg-red-300" },
-  { id: 4, emoji: "😌", label: "Relaxed", bgColor: "bg-green-300" },
-  { id: 5, emoji: "🤔", label: "Thoughtful", bgColor: "bg-purple-300" },
+  {
+    id: 1,
+    emoji: "😊",
+    label: "Happy",
+    gradient: "bg-gradient-to-t from-yellow-400 to-orange-500",
+  },
+  {
+    id: 2,
+    emoji: "😞",
+    label: "Sad",
+    gradient: "bg-gradient-to-t from-blue-300 to-blue-500",
+  },
+  {
+    id: 3,
+    emoji: "😠",
+    label: "Angry",
+    gradient: "bg-gradient-to-t from-red-500 to-yellow-500",
+  },
+  {
+    id: 4,
+    emoji: "😌",
+    label: "Relaxed",
+    gradient: "bg-gradient-to-t from-green-300 to-teal-500",
+  },
+  {
+    id: 5,
+    emoji: "🤔",
+    label: "Thoughtful",
+    gradient: "bg-gradient-to-t from-purple-400 to-pink-500",
+  },
 ];
 
 function MoodSelector() {
@@ -19,7 +44,9 @@ function MoodSelector() {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [entryDate, setEntryDate] = useState(new Date());
   const [activeView, setActiveView] = useState("mood");
+  const [isEditingPastEntry, setIsEditingPastEntry] = useState(false);
 
   // Fetching weather using useWeather hook
   const { weather, loading, error } = useWeather(latitude, longitude);
@@ -39,9 +66,11 @@ function MoodSelector() {
     }
   }, [moodEntries]);
 
-  const isTodayEntryExisting = moodEntries.some(
-    (entry) => new Date(entry.date).toDateString() === new Date().toDateString()
-  );
+  const isDateEntryExisting = (date) => {
+    return moodEntries.some(
+      (entry) => new Date(entry.date).toDateString() === date.toDateString()
+    );
+  };
 
   const handleMoodSelect = (mood) => {
     setSelectedMood(mood);
@@ -51,13 +80,25 @@ function MoodSelector() {
     setNote(event.target.value);
   };
 
+  const handleEntryDateChange = (date) => {
+    setEntryDate(date);
+    setIsEditingPastEntry(true);
+  };
+
+  const resetEntryForm = () => {
+    setSelectedMood(null);
+    setNote("");
+    setEntryDate(new Date());
+    setIsEditingPastEntry(false);
+  };
+
   const handleSave = () => {
     if (selectedMood && note) {
       const newEntry = {
         id: Date.now(),
         mood: selectedMood,
         note: note,
-        date: new Date().toISOString(),
+        date: entryDate.toISOString(),
         weather: weather || {
           description: "Unknown",
           temperature: "N/A",
@@ -65,16 +106,35 @@ function MoodSelector() {
         },
       };
 
-      const updatedEntries = [newEntry, ...moodEntries];
-      setMoodEntries(updatedEntries); // Update state
-      setSelectedMood(null);
-      setNote("");
+      // Check if entry for this date already exists
+      const dateExists = moodEntries.findIndex(
+        (entry) =>
+          new Date(entry.date).toDateString() === entryDate.toDateString()
+      );
+
+      let updatedEntries;
+      if (dateExists >= 0) {
+        // Replace existing entry
+        updatedEntries = [...moodEntries];
+        updatedEntries[dateExists] = newEntry;
+      } else {
+        // Add new entry and sort by date (newest first)
+        updatedEntries = [newEntry, ...moodEntries].sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+      }
+
+      setMoodEntries(updatedEntries);
+      resetEntryForm();
       setActiveView("entries");
     }
   };
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    setEntryDate(date);
+    setIsEditingPastEntry(true);
+    setActiveView("mood");
   };
 
   const getWeatherGradient = () => {
@@ -122,23 +182,37 @@ function MoodSelector() {
     }
   }, []);
 
-  // Format today's date
-  const todayDate = new Intl.DateTimeFormat("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date());
+  // Format date for display
+  const formatDate = (date) => {
+    return new Intl.DateTimeFormat("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(date);
+  };
+
+  const cancelPastEntry = () => {
+    resetEntryForm();
+  };
 
   return (
     <div
       className={`min-h-screen ${getWeatherGradient()} p-6 flex items-center justify-center`}
     >
-      <div className="w-full max-w-6xl bg-white bg-opacity-90 p-6 rounded-xl shadow-sm flex flex-col md:flex-row gap-6">
+      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 text-4xl font-bold text-black font-serif">
+        MOODY WEATHER
+      </div>
+
+      <div
+        className={`w-full max-w-6xl p-6 rounded-xl shadow-sm flex flex-col md:flex-row gap-6 justify-center items-center border-4 border-gray-300 ${
+          selectedMood ? selectedMood.gradient : "bg-white"
+        }`}
+      >
         {activeView === "mood" ? (
           <>
             {/* Left Column */}
-            <div className="w-full md:w-1/2 flex flex-col">
+            <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
               {/* Weather Display */}
               {weather && (
                 <div className="self-end mb-4 p-3 bg-white bg-opacity-80 rounded-lg shadow-sm">
@@ -147,7 +221,7 @@ function MoodSelector() {
                       <img
                         src={weather.icon}
                         alt={weather.description}
-                        className="w-8"
+                        className="w-12 h-12"
                       />
                     )}
                     <div>
@@ -162,22 +236,40 @@ function MoodSelector() {
 
               {/* Main Content */}
               <div className="flex-1 flex flex-col items-center text-center">
-                <p className="text-xl font-medium text-gray-600 mb-4">
-                  {todayDate}
-                </p>
+                <div className="flex items-center justify-between w-full mb-4">
+                  <p className="text-xl font-medium text-gray-600">
+                    {isEditingPastEntry ? (
+                      <span className="flex items-center gap-2">
+                        <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded text-sm">
+                          Past Entry
+                        </span>
+                        {formatDate(entryDate)}
+                      </span>
+                    ) : (
+                      formatDate(new Date())
+                    )}
+                  </p>
+
+                  {isEditingPastEntry && (
+                    <button
+                      onClick={cancelPastEntry}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
 
                 <h1 className="text-2xl font-semibold text-gray-800 mb-6">
-                  How are you feeling today?
+                  How {isEditingPastEntry ? "were" : "are"} you feeling{" "}
+                  {isEditingPastEntry ? "on this day" : "today"}?
                 </h1>
                 <div className="flex flex-wrap justify-center gap-3 mb-6">
                   {moods.map((mood) => (
                     <button
                       key={mood.id}
                       onClick={() => handleMoodSelect(mood)}
-                      className={`p-3 rounded-full ${
-                        mood.bgColor
-                      } text-2xl transition-all 
-                      ${
+                      className={`p-6 rounded-full text-3xl transition-all ${
                         selectedMood?.id === mood.id
                           ? "scale-125 shadow-md"
                           : "hover:scale-110"
@@ -191,7 +283,9 @@ function MoodSelector() {
                 <textarea
                   value={note}
                   onChange={handleNoteChange}
-                  placeholder="Write a short note about your day..."
+                  placeholder={`Write a note about ${
+                    isEditingPastEntry ? "this day" : "your day"
+                  }...`}
                   className="w-full h-48 p-3 border-2 border-gray-300 rounded-lg mb-6 focus:ring-2 focus:ring-blue-300 focus:border-transparent"
                   rows="4"
                 />
@@ -199,29 +293,39 @@ function MoodSelector() {
                 <div className="w-full space-y-3">
                   <button
                     onClick={handleSave}
-                    disabled={!selectedMood || !note || isTodayEntryExisting}
+                    disabled={!selectedMood || !note}
                     className={`w-full py-3 px-6 rounded-lg font-medium transition-all 
                     ${
-                      selectedMood && note && !isTodayEntryExisting
+                      selectedMood && note
                         ? "bg-blue-500 text-white hover:bg-blue-600"
                         : "bg-gray-100 text-gray-400 cursor-not-allowed"
                     }`}
                   >
-                    Save Mood
+                    {isDateEntryExisting(entryDate)
+                      ? "Update Entry"
+                      : "Save Entry"}
                   </button>
-                  <button
-                    onClick={() => setActiveView("entries")}
-                    className="w-full py-3 px-6 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
-                  >
-                    View Past Entries
-                  </button>
+
+                  {!isEditingPastEntry && (
+                    <button
+                      onClick={() => setActiveView("entries")}
+                      className="w-full py-3 px-6 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                    >
+                      View Past Entries
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* Right Column - Calendar */}
-            <div className="w-full md:w-1/2 flex flex-col gap-6">
+            <div className="w-full md:w-1/2 flex flex-col items-center justify-center gap-6">
               <div className="bg-white p-4 rounded-xl border border-gray-100">
+                <p className="text-center text-gray-600 mb-4">
+                  {isEditingPastEntry
+                    ? "Select a different date to add entry"
+                    : "Select a date to add a past entry"}
+                </p>
                 <ReactCalendar
                   value={selectedDate}
                   onChange={handleDateChange}
@@ -260,92 +364,49 @@ function MoodSelector() {
               <h2 className="text-2xl font-semibold text-gray-800">
                 Past Entries
               </h2>
-              <button
-                onClick={() => setActiveView("mood")}
-                className="text-blue-500 hover:text-blue-600 flex items-center gap-1"
-              >
-                <span>←</span>
-                <span>Back</span>
-              </button>
-            </div>
-
-            <div className="w-full h-[500px] overflow-y-auto space-y-4 pr-2 grid grid-cols-2 gap-6">
-              {moodEntries.map((entry) => (
-                <div
-                  key={entry.id}
-                  onClick={() => setSelectedEntry(entry)}
-                  className="group bg-white p-4 rounded-lg border border-gray-100 
-                  hover:border-blue-200 cursor-pointer transition-all"
-                >
-                  <div className="flex justify-between items-center mb-3">
-                    <div className="flex items-center gap-3">
-                      <span
-                        className={`text-2xl ${entry.mood.bgColor} p-2 rounded-full`}
-                      >
-                        {entry.mood.emoji}
-                      </span>
-                      <span className="font-medium text-gray-700">
-                        {entry.mood.label}
-                      </span>
-                    </div>
-                    <span className="text-sm text-gray-400">
-                      {new Date(entry.date).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <p className="text-gray-600 line-clamp-2 text-left">
-                    {entry.note}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Entry Detail Modal */}
-        {selectedEntry && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white max-w-2xl w-full rounded-xl p-6">
-              <div className="flex justify-between items-start mb-6">
-                <h3 className="text-xl font-semibold">
-                  {selectedEntry.mood.label}
-                </h3>
+              <div className="flex gap-4">
                 <button
-                  onClick={() => setSelectedEntry(null)}
-                  className="text-gray-400 hover:text-gray-600"
+                  onClick={() => {
+                    setEntryDate(new Date());
+                    setIsEditingPastEntry(false);
+                    setActiveView("mood");
+                  }}
+                  className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
                 >
-                  ✕
+                  New Entry
+                </button>
+                <button
+                  onClick={() => {
+                    setActiveView("mood");
+                    setIsEditingPastEntry(false);
+                  }}
+                  className="text-blue-500 hover:text-blue-600 flex items-center gap-1"
+                >
+                  <span>←</span>
+                  <span>Back</span>
                 </button>
               </div>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 text-gray-500">
-                  <span
-                    className={`text-2xl ${selectedEntry.mood.bgColor} p-2 rounded-full`}
+            </div>
+
+            <div className="space-y-4">
+              {moodEntries.length > 0 ? (
+                moodEntries.map((entry) => (
+                  <div
+                    key={entry.id}
+                    className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm"
                   >
-                    {selectedEntry.mood.emoji}
-                  </span>
-                  <span>
-                    {new Date(selectedEntry.date).toLocaleDateString()}
-                  </span>
-                </div>
-                <p className="text-gray-600 whitespace-pre-wrap">
-                  {selectedEntry.note}
-                </p>
-                {selectedEntry.weather && (
-                  <div className="flex items-center gap-2 text-gray-500">
-                    {selectedEntry.weather.icon && (
-                      <img
-                        src={selectedEntry.weather.icon}
-                        alt={selectedEntry.weather.description}
-                        className="w-6"
-                      />
-                    )}
-                    <span>
-                      {selectedEntry.weather.description},{" "}
-                      {selectedEntry.weather.temperature}°C
-                    </span>
+                    <div className="flex items-center gap-4">
+                      <span className="text-xl">{entry.mood.emoji}</span>
+                      <p className="text-sm">{entry.note}</p>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {new Date(entry.date).toLocaleDateString()}
+                    </div>
                   </div>
-                )}
-              </div>
+                ))
+              ) : (
+                <p className="text-gray-500">No entries yet</p>
+              )}
             </div>
           </div>
         )}
