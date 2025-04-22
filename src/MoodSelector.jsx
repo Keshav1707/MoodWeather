@@ -2,37 +2,32 @@ import React, { useState, useEffect } from "react";
 import ReactCalendar from "react-calendar";
 import useWeather from "./useWeather";
 import "react-calendar/dist/Calendar.css";
-
+import MoodTemperatureGraph from "./MoodTemperatureGraph";
 const moods = [
   {
     id: 1,
     emoji: "😊",
     label: "Happy",
-    gradient: "bg-gradient-to-t from-yellow-400 to-orange-500",
   },
   {
     id: 2,
     emoji: "😞",
     label: "Sad",
-    gradient: "bg-gradient-to-t from-blue-300 to-blue-500",
   },
   {
     id: 3,
     emoji: "😠",
     label: "Angry",
-    gradient: "bg-gradient-to-t from-red-500 to-yellow-500",
   },
   {
     id: 4,
     emoji: "😌",
     label: "Relaxed",
-    gradient: "bg-gradient-to-t from-green-300 to-teal-500",
   },
   {
     id: 5,
     emoji: "🤔",
     label: "Thoughtful",
-    gradient: "bg-gradient-to-t from-purple-400 to-pink-500",
   },
 ];
 
@@ -48,10 +43,8 @@ function MoodSelector() {
   const [activeView, setActiveView] = useState("mood");
   const [isEditingPastEntry, setIsEditingPastEntry] = useState(false);
 
-  // Fetching weather using useWeather hook
-  const { weather, loading, error } = useWeather(latitude, longitude);
+  const { weather } = useWeather(latitude, longitude);
 
-  // Load past entries from localStorage when component mounts
   useEffect(() => {
     const savedEntries = localStorage.getItem("moodEntries");
     if (savedEntries) {
@@ -59,12 +52,29 @@ function MoodSelector() {
     }
   }, []);
 
-  // Save entries to localStorage whenever moodEntries change
   useEffect(() => {
     if (moodEntries.length > 0) {
       localStorage.setItem("moodEntries", JSON.stringify(moodEntries));
     }
   }, [moodEntries]);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLatitude(position.coords.latitude);
+          setLongitude(position.coords.longitude);
+        },
+        () => {
+          setLatitude(37.7749);
+          setLongitude(-122.4194);
+        }
+      );
+    } else {
+      setLatitude(37.7749);
+      setLongitude(-122.4194);
+    }
+  }, []);
 
   const isDateEntryExisting = (date) => {
     return moodEntries.some(
@@ -106,7 +116,6 @@ function MoodSelector() {
         },
       };
 
-      // Check if entry for this date already exists
       const dateExists = moodEntries.findIndex(
         (entry) =>
           new Date(entry.date).toDateString() === entryDate.toDateString()
@@ -114,11 +123,9 @@ function MoodSelector() {
 
       let updatedEntries;
       if (dateExists >= 0) {
-        // Replace existing entry
         updatedEntries = [...moodEntries];
         updatedEntries[dateExists] = newEntry;
       } else {
-        // Add new entry and sort by date (newest first)
         updatedEntries = [newEntry, ...moodEntries].sort(
           (a, b) => new Date(b.date) - new Date(a.date)
         );
@@ -137,6 +144,10 @@ function MoodSelector() {
     setActiveView("mood");
   };
 
+  const cancelPastEntry = () => {
+    resetEntryForm();
+  };
+
   const getWeatherGradient = () => {
     if (!weather) return "bg-gradient-to-t from-orange-500 to-purple-500";
     const temp = parseFloat(weather.temperature);
@@ -150,39 +161,6 @@ function MoodSelector() {
     }
   };
 
-  const isToday = (date) => {
-    const today = new Date();
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
-  };
-
-  // Geolocation logic for fetching the user's location
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lon = position.coords.longitude;
-          setLatitude(lat);
-          setLongitude(lon);
-        },
-        (error) => {
-          console.error("Geolocation failed:", error);
-          setLatitude(37.7749); // Fallback location (San Francisco)
-          setLongitude(-122.4194);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-      setLatitude(37.7749); // Fallback location (San Francisco)
-      setLongitude(-122.4194);
-    }
-  }, []);
-
-  // Format date for display
   const formatDate = (date) => {
     return new Intl.DateTimeFormat("en-US", {
       weekday: "long",
@@ -192,28 +170,15 @@ function MoodSelector() {
     }).format(date);
   };
 
-  const cancelPastEntry = () => {
-    resetEntryForm();
-  };
-
   return (
     <div
       className={`min-h-screen ${getWeatherGradient()} p-6 flex items-center justify-center`}
     >
-      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 text-4xl font-bold text-black font-serif">
-        MOODY WEATHER
-      </div>
-
-      <div
-        className={`w-full max-w-6xl p-6 rounded-xl shadow-sm flex flex-col md:flex-row gap-6 justify-center items-center border-4 border-gray-300 ${
-          selectedMood ? selectedMood.gradient : "bg-white"
-        }`}
-      >
+      <div className="w-full max-w-6xl p-6 rounded-xl shadow-sm flex flex-col md:flex-row gap-6 justify-center items-center border-4 border-gray-300 bg-white">
         {activeView === "mood" ? (
           <>
             {/* Left Column */}
             <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
-              {/* Weather Display */}
               {weather && (
                 <div className="self-end mb-4 p-3 bg-white bg-opacity-80 rounded-lg shadow-sm">
                   <div className="flex items-center gap-2">
@@ -264,12 +229,14 @@ function MoodSelector() {
                   How {isEditingPastEntry ? "were" : "are"} you feeling{" "}
                   {isEditingPastEntry ? "on this day" : "today"}?
                 </h1>
+
+                {/* Mood Buttons */}
                 <div className="flex flex-wrap justify-center gap-3 mb-6">
                   {moods.map((mood) => (
                     <button
                       key={mood.id}
                       onClick={() => handleMoodSelect(mood)}
-                      className={`p-6 rounded-full text-3xl transition-all ${
+                      className={`p-6 rounded-full bg-gray-100 hover:bg-gray-200 text-3xl transition-all ${
                         selectedMood?.id === mood.id
                           ? "scale-125 shadow-md"
                           : "hover:scale-110"
@@ -280,6 +247,7 @@ function MoodSelector() {
                   ))}
                 </div>
 
+                {/* Note input */}
                 <textarea
                   value={note}
                   onChange={handleNoteChange}
@@ -290,6 +258,7 @@ function MoodSelector() {
                   rows="4"
                 />
 
+                {/* Save Button */}
                 <div className="w-full space-y-3">
                   <button
                     onClick={handleSave}
@@ -320,7 +289,7 @@ function MoodSelector() {
 
             {/* Right Column - Calendar */}
             <div className="w-full md:w-1/2 flex flex-col items-center justify-center gap-6">
-              <div className="bg-white p-4 rounded-xl border border-gray-100">
+              <div className="bg-white p-4 rounded-xl border border-gray-100 w-full md:w-auto">
                 <p className="text-center text-gray-600 mb-4">
                   {isEditingPastEntry
                     ? "Select a different date to add entry"
@@ -358,7 +327,7 @@ function MoodSelector() {
             </div>
           </>
         ) : (
-          // Past Entries View (Full Width)
+          // Past Entries View
           <div className="w-full flex flex-col">
             <div className="flex justify-between items-center w-full mb-6">
               <h2 className="text-2xl font-semibold text-gray-800">
@@ -411,6 +380,9 @@ function MoodSelector() {
           </div>
         )}
       </div>
+      <>
+        <MoodTemperatureGraph moodEntries={moodEntries} />
+      </>
     </div>
   );
 }
