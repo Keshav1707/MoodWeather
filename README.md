@@ -11,20 +11,24 @@ MoodWeather is a simple React application that allows users to track their moods
 - **Persistent Data**: Entries are stored in the browser's local storage to persist even after a page refresh.
 - **Add Old Entries**: Users can add and view old mood entries from the past.
 
+## Screenshots
+
+Here are some screenshots of the application:
+
+![MoodWeather App Screenshot 1](https://github.com/Keshav1707/MoodWeather/blob/master/assets/images/Screenshot%202025-04-22%20213840.png?raw=true)
+![MoodWeather App Screenshot 2](https://github.com/Keshav1707/MoodWeather/blob/master/assets/images/Screenshot%202025-04-22%20213851.png?raw=true)
+![MoodWeather App Screenshot 3](https://github.com/Keshav1707/MoodWeather/blob/master/assets/images/Screenshot%202025-04-22%20213909.png?raw=true)
+
 ## Setup
 
 ### Prerequisites
 
 - Node.js (version 16.x or higher)
 - Yarn (optional, you can also use npm)
-![MoodWeather App Screenshot 1](./assets/images/Screenshot 2025-04-22 213840.png)
-![MoodWeather App Screenshot 2](./assets/images/Screenshot 2025-04-22 213840.png)
-![MoodWeather App Screenshot 3](./assets/images/Screenshot_2025-04-22_213909.png)
+
 ### Install Dependencies
 
 To install the required dependencies, run:
 
 ```bash
 yarn install
-
-
