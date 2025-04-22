@@ -6,7 +6,7 @@ MoodWeather is a simple yet powerful React application designed to help users tr
 
 ### 1. Mood Selector
 MoodWeather allows users to track their current emotional state by selecting one of five predefined moods:
-
+![MoodWeather App Screenshot 1](https://github.com/Keshav1707/MoodWeather/blob/master/assets/images/Screenshot%202025-04-22%20213840.png?raw=true)
 - **Happy**: A bright, warm background color like yellow or orange.
 - **Sad**: A cool, darker background color such as blue or grey.
 - **Neutral**: A balanced background color, like green, to indicate neither positive nor negative emotion.
@@ -17,7 +17,7 @@ Once a user selects their mood, the app automatically changes the background col
 
 ### 2. Entries Page
 The Entries Page is where all the user's past mood entries are stored. The app allows the user to:
-
+![MoodWeather App Screenshot 2](https://github.com/Keshav1707/MoodWeather/blob/master/assets/images/Screenshot%202025-04-22%20213851.png?raw=true) 
 - View all past mood entries.
 - Update an entry if necessary (e.g., editing a mood or adding additional notes).
 - Delete an entry to remove it from the list.
@@ -48,9 +48,9 @@ All user entries are saved in the browser's localStorage, so data persists even 
 
 ### 6. Add Old Entries
 Users can manually add old mood entries from the past. This feature is useful for users who want to track their mood history but may not have entered data regularly.
-## Screenshots Here are some screenshots of the application:
-![MoodWeather App Screenshot 1](https://github.com/Keshav1707/MoodWeather/blob/master/assets/images/Screenshot%202025-04-22%20213840.png?raw=true)
-![MoodWeather App Screenshot 2](https://github.com/Keshav1707/MoodWeather/blob/master/assets/images/Screenshot%202025-04-22%20213851.png?raw=true) 
+
+
+
 
 ## Setup
 
