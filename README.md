@@ -26,6 +26,7 @@ Each entry records the mood, temperature (if available), and any additional note
 
 ### 3. Mood Graph
 The Mood Graph is a visual representation of how the user's mood has fluctuated over time. The graph plots mood data against temperature, allowing the user to see the correlation between their emotional state and the temperature at the time of the entry.
+![MoodWeather App Screenshot 3](https://github.com/Keshav1707/MoodWeather/blob/master/assets/images/Screenshot%202025-04-22%20213909.png?raw=true)
 
 - **Mood vs Temperature**: The X-axis of the graph represents the dates or times when entries were made, and the Y-axis represents the mood intensity or temperature. This visualization helps users identify patterns between their mood changes and the weather.
 
@@ -47,7 +48,10 @@ All user entries are saved in the browser's localStorage, so data persists even 
 
 ### 6. Add Old Entries
 Users can manually add old mood entries from the past. This feature is useful for users who want to track their mood history but may not have entered data regularly.
-## Screenshots Here are some screenshots of the application: ![MoodWeather App Screenshot 1](https://github.com/Keshav1707/MoodWeather/blob/master/assets/images/Screenshot%202025-04-22%20213840.png?raw=true) ![MoodWeather App Screenshot 2](https://github.com/Keshav1707/MoodWeather/blob/master/assets/images/Screenshot%202025-04-22%20213851.png?raw=true) ![MoodWeather App Screenshot 3](https://github.com/Keshav1707/MoodWeather/blob/master/assets/images/Screenshot%202025-04-22%20213909.png?raw=true)
+## Screenshots Here are some screenshots of the application:
+![MoodWeather App Screenshot 1](https://github.com/Keshav1707/MoodWeather/blob/master/assets/images/Screenshot%202025-04-22%20213840.png?raw=true)
+![MoodWeather App Screenshot 2](https://github.com/Keshav1707/MoodWeather/blob/master/assets/images/Screenshot%202025-04-22%20213851.png?raw=true) 
+
 ## Setup
 
 ### Prerequisites
