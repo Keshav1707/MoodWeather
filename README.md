@@ -119,7 +119,7 @@ npm run deploy
 
 This will make your app publicly available at:
 ```
-https://your-username.github.io/your-repository-name/
+[https://your-username.github.io/your-repository-name/](https://keshav1707.github.io/MoodWeather/)
 ```
 
 ## Contributing
@@ -134,4 +134,4 @@ Contributions are welcome! If you'd like to improve the app or fix issues, pleas
 This project is licensed under the MIT License.
 
 ## Contact
-For any questions or suggestions, feel free to reach out at your-email@example.com
+For any questions or suggestions, feel free to reach out at keshavdewaker@gmail.com
